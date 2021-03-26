@@ -1,30 +1,54 @@
 import vt
+import requests
+import jsonformatter
+import csv
+import json
+from datetime import datetime
 path = str
 apiKey = str
-#client = vt.Client(apikey)
-def upload():
+
+def ipScan(apiKey):
+    ip=input("Ingresa la ip a consultar")
+    postIn = requests.get("https://www.virustotal.com/api/v3/ip_addresses/"+look,
+                                 headers={
+                                     "x-apikey": apiKey
+                                     })
+    return postIn.text
+
+def parsingJson(string):
+    parsed = json.dumps(string)
+    return parsed
+
+def ipScanFile(apiKey):
     global path
-    global apiKey
-    apiKey=input("Ingresa la key\n")
-    client = vt.Client(apiKey)
+    postInList=[]
     path = input("Ingresa el path del archivo\n")
-    with open(path,"rb") as f:
-        analisis = client.scan_file(f, wait_for_completion=True)
-    return analisis
+    with open(path,"r") as f:
+        lectura=f.readlines()
+        for look in lectura:
+           postIn = requests.get("https://www.virustotal.com/api/v3/ip_addresses/"+look,
+                                 headers={
+                                     "x-apikey": apiKey
+                                     })
+           postInList.append(postIn.json())
+    return postInList
     
-def about():
-    apiKey = input("entra")
-    client=vt.Client(apiKey)
-    file = client.get_object("/files/"+"NDhkMGJkOTJmY2I2ZTlhZDJmMGY3NmI1NmQ4YmNiZTU6MTYxNjY1MjU2Ng")
-    print(file.last_analysis_stats)
+"""def exportaCSV(analisis):
+
+    timeNow=datetime.now()
+    timestr=str(timeNow)
+    csv_data = open("Analisis.csv","w")
+    csv_writer = csv.writer(csv_data)
+    analisis_data = analisis["data"]
+    header = analisis_data.keys()
+    csv_writer.writerow(header)
+    csv_writer.writerow(analisis_data.values())
+    csv_data.close()"""
 
 def main():
-    """global path
-    cliente=upload()
-    print(cliente)
-    print("Obtener informacion de un archivo?\n")"""
-    about()
-
+    global apiKey
+    apiKey=input("Ingresa la key\n")
+    print(ipScanFile(apiKey))
 
 if __name__== "__main__":
     main()
