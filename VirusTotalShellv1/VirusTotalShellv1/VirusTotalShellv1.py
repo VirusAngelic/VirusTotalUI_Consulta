@@ -48,7 +48,8 @@ def ipScanFile(apiKey):
 def main():
     global apiKey
     apiKey=input("Ingresa la key\n")
-    print(ipScanFile(apiKey))
+    consulta = ipScanFile(apiKey)
+    return consulta
 
 if __name__== "__main__":
     main()
