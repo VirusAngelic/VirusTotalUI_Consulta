@@ -11,6 +11,8 @@
     <OutputPath>.</OutputPath>
     <Name>VirusTotalShellv1</Name>
     <RootNamespace>VirusTotalShellv1</RootNamespace>
+    <InterpreterId>
+    </InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>

@@ -1,30 +1,28 @@
-import vt
-import requests
-import jsonformatter
-import csv
-import json
+# Autor: Moises Diaz (git: VirusAngelic)
+import requests #Requests en http
+import csv #For CSV writing
+import json #Handle json outputs
 from datetime import datetime
-path = str
-apiKey = str
 
-def ipScan(apiKey):
+listAnalisis = list()  
+
+def ipScan(apiKey): #Function for a single ip query
     ip=input("Ingresa la ip a consultar")
-    postIn = requests.get("https://www.virustotal.com/api/v3/ip_addresses/"+look,
+    postIn = requests.get("https://www.virustotal.com/api/v3/ip_addresses/"+look, #making http request
                                  headers={
                                      "x-apikey": apiKey
                                      })
     return postIn.text
 
-def parsingJson(string):
-    parsed = json.dumps(string)
-    return parsed
 
-def ipScanFile(apiKey):
-    global path
+def ipScanFile(apiKey): #Scanning ips from file
     postInList=[]
     path = input("Ingresa el path del archivo\n")
     with open(path,"r") as f:
         lectura=f.readlines()
+        for ind in lectura:
+            if ind == "\r":
+                lectura.remove("\r")
         for look in lectura:
            postIn = requests.get("https://www.virustotal.com/api/v3/ip_addresses/"+look,
                                  headers={
@@ -33,23 +31,28 @@ def ipScanFile(apiKey):
            postInList.append(postIn.json())
     return postInList
     
-"""def exportaCSV(analisis):
+def exportaCSV(analisisJson): #Making CSV from JSON format
+    with open("Analisis.csv","w") as writing:
+        csv_writer = csv.writer(writing, delimiter = ",")
+        count=0
+        for keys in analisisJson:
+            csv_writer.writerow(analisisJson[count]["data"])
+            for attrib in (analisisJson[count]["data"]["attributes"].keys()):
+                csv_writer.writerow(analisisJson[count]["data"]["attributes"].keys())
+                csv_writer.writerow(analisisJson[count]["data"]["attributes"].values())
+            count+=1
 
-    timeNow=datetime.now()
-    timestr=str(timeNow)
-    csv_data = open("Analisis.csv","w")
-    csv_writer = csv.writer(csv_data)
-    analisis_data = analisis["data"]
-    header = analisis_data.keys()
-    csv_writer.writerow(header)
-    csv_writer.writerow(analisis_data.values())
-    csv_data.close()"""
+def exportaTxt(analisisJson): #Export as txt file
+    with open("Analisis.txt","w") as writing: 
+        writing.write(str(analisisJson))
+        return analisisJson #Return for shell operations
 
 def main():
-    global apiKey
-    apiKey=input("Ingresa la key\n")
-    consulta = ipScanFile(apiKey)
-    return consulta
+
+    apiKey = input("Ingresa la key\n")
+    analisis=ipScanFile(apiKey)
+    exportaCSV(analisis)
+    exportaTxt(analisis)
 
 if __name__== "__main__":
     main()
