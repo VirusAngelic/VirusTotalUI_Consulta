@@ -3,6 +3,7 @@ import requests #Requests en http
 import csv #For CSV writing
 import json #Handle json outputs
 from datetime import datetime
+import sys
 
 listAnalisis = list()  
 
@@ -15,9 +16,8 @@ def ipScan(apiKey): #Function for a single ip query
     return postIn.text
 
 
-def ipScanFile(apiKey): #Scanning ips from file
+def ipScanFile(apiKey,path): #Scanning ips from file
     postInList=[]
-    path = input("Ingresa el path del archivo\n")
     with open(path,"r") as f:
         lectura=f.readlines()
         for ind in lectura:
@@ -48,11 +48,14 @@ def exportaTxt(analisisJson): #Export as txt file
         return analisisJson #Return for shell operations
 
 def main():
-
-    apiKey = input("Ingresa la key\n")
-    analisis=ipScanFile(apiKey)
-    exportaCSV(analisis)
-    exportaTxt(analisis)
+    try:
+        path=sys.argv[1] #Getting parameter from shel
+        apiKey = "e205541e1ef157f753580d9d866f9bb2d7bac8fbd8d6b5658fff387af5d818f3" #Using a default shell
+        analisis=ipScanFile(apiKey,path) #Calling analisis function with apikey and path argues
+        exportaCSV(analisis) #Making CSV file
+        exportaTxt(analisis) #Making txt file
+    except:
+        print("Ingresa un path de archivo valido")
 
 if __name__== "__main__":
     main()
