@@ -35,11 +35,14 @@ def exportaCSV(analisisJson): #Making CSV from JSON format
     with open("Analisis.csv","w") as writing:
         csv_writer = csv.writer(writing, delimiter = ",")
         count=0
+        ROW_HEADERS=["Ip","Country","ForcePoint","Symantec","Palo Alto Networks"]
+        for keys in ROW_HEADERS:
+            csv_writer.writerow(ROW_HEADERS)
         for keys in analisisJson:
-            csv_writer.writerow(analisisJson[count]["data"])
-            for attrib in (analisisJson[count]["data"]["attributes"].keys()):
-                csv_writer.writerow(analisisJson[count]["data"]["attributes"].keys())
-                csv_writer.writerow(analisisJson[count]["data"]["attributes"].values())
+            csv_writer.writerow(analisisJson[count]["data"]["id"])
+            csv_writer.writerow(analisisJson[count]["data"]["attributes"]["country"])
+            csv_writer.writerow(analisisJson[count]["data"]["attributes"]["last_analysis_results"]["Forcepoint ThreatSeeker"])
+            csv_writer.writerow(analisisJson[count]["data"]["attributes"]["last_analysis_results"]["Forcepoint ThreatSeeker"])
             count+=1
 
 def exportaTxt(analisisJson): #Export as txt file
@@ -49,7 +52,8 @@ def exportaTxt(analisisJson): #Export as txt file
 
 def main():
     try:
-        path=sys.argv[1] #Getting parameter from shel
+        #path=sys.argv[1] #Getting parameter from shel
+        path="ipa.txt"
         apiKey = "e205541e1ef157f753580d9d866f9bb2d7bac8fbd8d6b5658fff387af5d818f3" #Using a default shell
         analisis=ipScanFile(apiKey,path) #Calling analisis function with apikey and path argues
         exportaCSV(analisis) #Making CSV file
